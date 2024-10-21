@@ -1,0 +1,146 @@
+body{
+    background: lightgrey;
+    font-family: sans-serif;
+    background-image: url("fondo.jpg");
+}
+
+a{
+    color: rgb(0, 50, 0);
+    text-decoration: none;
+    font-weight: bolder;
+}
+
+h1{
+    font-size: 50px;
+    text-align: center;
+}
+
+.titulo{
+    font-size: 95px;
+    color: white;
+    text-shadow: 3px 3px 10px rgb(50, 50, 50);
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.game h1{
+    margin: 0 0 15px 0;
+    font-size: 30px;
+    text-align: left;
+}
+
+.game, .platform, .error, .form{
+    background: rgba(140, 240, 140, 0.85);
+    padding: 20px;
+    margin: 20px auto;
+    width: 75%;
+    max-width: 675px;
+    border: 3px solid green;
+    border-radius: 25px 0;
+    white-space: normal;
+    transition: 1s;
+    box-shadow: 1px 1px 5px grey;
+    font-size: 14px;
+    position: relative; 
+}
+
+.game:hover{
+    transform: scale(1.05);
+    transition: 0.25s;
+    box-shadow: 5px 5px 10px rgb(75, 75, 75);
+    background: rgb(200, 250, 200);
+    border: 3px solid white;
+}
+
+.platform{
+    background-color: darkgreen;
+    color: white;
+    border: 5px solid lightgreen;
+    font-size: 20px;
+    text-align: justify;
+}
+.platform:hover{
+    transform: scale(1.05);
+    transition: 0.25s;
+    box-shadow: 5px 5px 10px rgb(75, 75, 75);
+}
+
+.platform h1{
+    margin: 0 0 15px 0;
+    font-size: 50px;
+    text-align: left;
+}
+
+.error{
+    background-color: red;
+    color: white;
+    border: 5px solid black;
+    font-size: 20px;
+    text-align: justify;
+}
+
+.delete{
+    position: absolute;
+    right:10px;
+    top: 10px;
+    font-size: 14px;
+    color: red;
+    border-radius: 15px;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    transition: 0.5s;
+    background: lightgreen;
+}
+
+.delete:hover{
+    background: red;
+    color: white;
+    transform: scale(1.25);
+    transition: 0.25s;
+}
+
+.form{
+    line-height: 35px;
+    font-size: 18px;
+    width: 50%;
+    min-width: 400px;
+}
+
+.form div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.form label {
+    margin-right: 10px;
+    flex: 0 0 100px;
+    white-space: nowrap;
+}
+
+.form input, .form select, .form button{
+    flex: 1;
+    box-sizing: border-box;
+    height: 35px;
+    padding: 5px;
+    border-radius: 20px;
+    border: 2px, solid green;
+    padding-left: 10px;
+}
+
+.form button{
+    background-color: green;
+    color: white;
+    font-size: 18px;
+    transition: 0.5s;
+    margin-top: 15px;
+}
+
+.form button:hover{
+    background-color: darkgreen;
+    color: lightgreen;
+    font-size: 18px;
+    box-shadow: 2px 2px 5px rgb(75, 75, 75);
+    transition: 0.25s;
+    cursor: pointer;
+}
