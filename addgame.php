@@ -95,10 +95,8 @@ if (!empty($_POST)) {
             $query = $connection->prepare($consulta);
             $query->execute([':publisher_name' => $_POST['publisher']]);
             $publisherId = $connection->lastInsertId();  // ID del editor recién creado
-            echo "Publisher ID Insertado: " . $publisherId . "<br>";
         } else {
             $publisherId = $publisher['id'];  // ID del editor si ya existe
-            echo "Publisher ID Ya existe: " . $publisherId . "<br>";
         }
 
         // Insertamos el juego
@@ -114,28 +112,34 @@ if (!empty($_POST)) {
         $consulta = 'INSERT INTO game_publisher (game_id, publisher_id) VALUES (:game_id, :publisher_id)';
         $query = $connection->prepare($consulta);
         $query->execute([
-            ':game_id' => $gameId,            // ID del juego
-            ':publisher_id' => $publisherId    // ID del editor
+            ':game_id' => $gameId,  // ID del juego
+            ':publisher_id' => $publisherId  // ID del editor
         ]);
 
         $gamePublisherId = $connection->lastInsertId();  // ID del juego recién insertado
-
-
 
         // Insertamos la plataforma
         $consulta = 'INSERT INTO game_platform (game_publisher_id, platform_id, release_year) VALUES (:game_publisher_id, :platform_id, :release_year)';
         $query = $connection->prepare($consulta);
         $query->execute([
             ':game_publisher_id' => $gamePublisherId,  // ID del editor que ya hemos guardado
-            ':platform_id' => $_POST['platform'], 
-            ':release_year' => $_POST['release_year'] // Año de lanzamiento
+            ':platform_id' => $_POST['platform'],
+            ':release_year' => $_POST['release_year']  // Año de lanzamiento
+        ]);
+
+        $gamePlatformId = $connection->lastInsertId();  // ID de la plataforma recién insertado
+
+        // Insertamos las ventas
+        $consulta = 'INSERT INTO region_sales (region_id, game_platform_id, num_sales) VALUES (4, :game_platform_id, 0)';
+        $query = $connection->prepare($consulta);
+        $query->execute([
+            ':game_platform_id' => $gamePlatformId  // ID de la relación juego-plataforma
         ]);
 
         $connection->commit();
-        
-        // SI TODO OK, REDIRIGIMOS AL JUEGO
-        header('Location: http://localhost/UD05/filter.php?game=' . $_POST['game_name']);
 
+        // SI TODO OK, REDIRIGIMOS AL JUEGO
+        header('Location: http://localhost/UD05/game.php?game=' . $_POST['game_name']);
     } catch (PDOException $e) {
         // Rollback en caso de error
         $connection->rollBack();

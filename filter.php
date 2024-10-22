@@ -102,7 +102,7 @@
     echo "<div class='container'>";
     foreach ($juegos as $juego){ 
         echo "<div class='game'>";
-        echo "<h1><a href='filter.php?game=". $juego['NombreJuego'] . "'>" . $juego['NombreJuego'] . "</a></h1>";
+        echo "<h1><a href='game.php?game=". $juego['NombreJuego'] . "'>" . $juego['NombreJuego'] . "</a></h1>";
         echo "Año de lanzamiento: <a href='filter.php?year=". $juego['AñoLanzamiento'] . "'>" . $juego['AñoLanzamiento'] . "</a> | ";
         echo "Plataforma: <a href='filter.php?platform=" . $juego['Plataforma'] . "'>" . $juego['Plataforma'] . "</a> | ";
         echo "Género: <a href='filter.php?genre=" . $juego['Género'] . "'>" . $juego['Género'] . "</a> | ";

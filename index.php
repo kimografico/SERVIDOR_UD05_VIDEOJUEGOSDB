@@ -8,10 +8,10 @@
 </head>
 <body>
     <?php
-    include 'connection.php';
+        include 'connection.php';
 
-    $consulta = 
-        'SELECT 
+        $consulta =
+            'SELECT 
             g.id AS IdJuego,
             g.game_name AS NombreJuego,
             gp.release_year AS AñoLanzamiento,
@@ -29,25 +29,28 @@
         JOIN 
             genre ge ON g.genre_id = ge.id
         JOIN 
-            publisher pub ON gpu.publisher_id = pub.id;';
+            publisher pub ON gpu.publisher_id = pub.id
+        ORDER BY 
+            g.id DESC;';  // El ORDER BY es muy poco óptimo en servidor, pero lo pongo para ver enseguida los últimos juegos añadidos
 
-    $juegos = $connection->query($consulta)->fetchAll();  // Trabajamos con fetchAll para hacer las mínimas consultas al servidor
-    // print_r($juegos);
+        $juegos = $connection->query($consulta)->fetchAll();  // Trabajamos con fetchAll para hacer las mínimas consultas al servidor
+        // print_r($juegos);
 
-    echo '<h1 class="titulo">🎮 VideoJuegosDB 👾</h1>';
-    foreach ($juegos as $juego){ 
-        echo "<div class='game'>";
-        echo "<h1><a href='filter.php?game=". $juego['NombreJuego'] . "'>" . $juego['NombreJuego'] . "</a></h1>";
-        echo "Año de lanzamiento: <a href='filter.php?year=". $juego['AñoLanzamiento'] . "'>" . $juego['AñoLanzamiento'] . "</a> | ";
-        echo "Plataforma: <a href='filter.php?platform=" . $juego['Plataforma'] . "'>" . $juego['Plataforma'] . "</a> | ";
-        echo "Género: <a href='filter.php?genre=" . $juego['Género'] . "'>" . $juego['Género'] . "</a> | ";
-        echo "Editor: <a href='filter.php?publisher=" . $juego['Editor'] . "'>" . $juego['Editor'] . "</a>";
-        echo "<a class='delete' href='delete.php?gameid=". $juego['IdJuego'] . "'>✖</a>";
-        echo "</div>";
-    }
+        echo '<h1 class="titulo">🎮 VideoJuegosDB 👾</h1>';
+        echo '<h1><a class="addbutton" href="addgame.php">Añadir Juego</a></h1>';
+        foreach ($juegos as $juego) {
+            echo "<div class='game'>";
+            echo "<h1><a href='game.php?game=" . $juego['NombreJuego'] . "'>" . $juego['NombreJuego'] . '</a></h1>';
+            echo "Año de lanzamiento: <a href='filter.php?year=" . $juego['AñoLanzamiento'] . "'>" . $juego['AñoLanzamiento'] . '</a> | ';
+            echo "Plataforma: <a href='filter.php?platform=" . $juego['Plataforma'] . "'>" . $juego['Plataforma'] . '</a> | ';
+            echo "Género: <a href='filter.php?genre=" . $juego['Género'] . "'>" . $juego['Género'] . '</a> | ';
+            echo "Editor: <a href='filter.php?publisher=" . $juego['Editor'] . "'>" . $juego['Editor'] . '</a>';
+            echo "<a class='delete' href='delete.php?gameid=" . $juego['IdJuego'] . "'>✖</a>";
+            echo '</div>';
+        }
 
-    unset ($connection);
-    unset ($juegos);
+        unset($connection);
+        unset($juegos);
 
     ?>
 </body>

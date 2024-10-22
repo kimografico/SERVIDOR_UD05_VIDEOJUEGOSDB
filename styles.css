@@ -15,6 +15,11 @@ h1{
     text-align: center;
 }
 
+hr{
+    border: 1px solid green;
+    margin-bottom: 20px;
+}
+
 .titulo{
     font-size: 95px;
     color: white;
@@ -28,7 +33,7 @@ h1{
     text-align: left;
 }
 
-.game, .platform, .error, .form{
+.game, .platform, .error, .form, .gameInfo{
     background: rgba(140, 240, 140, 0.85);
     padding: 20px;
     margin: 20px auto;
@@ -143,4 +148,22 @@ h1{
     box-shadow: 2px 2px 5px rgb(75, 75, 75);
     transition: 0.25s;
     cursor: pointer;
+}
+
+.addbutton{
+    font-size: 15px;
+    font-weight: 300;
+    color: white;
+    background-color: green;
+    padding: 5px 15px;
+    border-radius: 20px;
+    margin-bottom: 50px;
+    transition: 0.25s;
+}
+
+.addbutton:hover{
+    background-color: lightgreen;
+    color: darkgreen;
+    transition: 0.25s;
+    box-shadow: 2px 2px 5px rgb(75, 75, 75);
 }
