@@ -84,56 +84,96 @@ if (!empty($_POST)) {
     include 'connection.php';
     $connection->beginTransaction();
     try {
-        // Comprobamos si el publisher ya existe y si no, lo creamos.
+        // PUBLISHER
+        // Comprobamos si el publisher ya existe
         $consulta = 'SELECT id FROM publisher WHERE publisher_name = :publisher_name';
         $query = $connection->prepare($consulta);
         $query->execute([':publisher_name' => $_POST['publisher']]);
         $publisher = $query->fetch();
 
         if (!$publisher) {
+            // Insertamos el publisher si no existe
             $consulta = 'INSERT INTO publisher (publisher_name) VALUES (:publisher_name)';
             $query = $connection->prepare($consulta);
             $query->execute([':publisher_name' => $_POST['publisher']]);
-            $publisherId = $connection->lastInsertId();  // ID del editor recién creado
+            $publisherId = $connection->lastInsertId();
         } else {
-            $publisherId = $publisher['id'];  // ID del editor si ya existe
+            // Si ya existe, recuperamos el ID
+            $publisherId = $publisher['id'];
         }
 
-        // Insertamos el juego
-        $consulta = 'INSERT INTO game (game_name, genre_id) VALUES (:game_name, :genre_id)';
+
+        // GAME
+        $consulta = 'SELECT id FROM game WHERE game_name = :game_name'; // Para saber si el juego ya existe
+        $query = $connection->prepare($consulta);
+        $query->execute([':game_name' => $_POST['game_name']]);
+        $game = $query->fetch();
+
+        if (!$game) {
+            // Insertamos el juego si no existe
+            $consulta = 'INSERT INTO game (game_name, genre_id) VALUES (:game_name, :genre_id)';
+            $query = $connection->prepare($consulta);
+            $query->execute([
+                ':game_name' => $_POST['game_name'],
+                ':genre_id' => $_POST['genre']
+            ]);
+            $gameId = $connection->lastInsertId();
+        } else {
+            // Si el juego ya existe, recuperamos su ID
+            $gameId = $game['id'];
+        }
+
+        // GAME - PUBLISHER
+        $consulta = 'SELECT id FROM game_publisher WHERE game_id = :game_id AND publisher_id = :publisher_id'; // Para saber si la relación ya existe
         $query = $connection->prepare($consulta);
         $query->execute([
-            ':game_name' => $_POST['game_name'],
-            ':genre_id' => $_POST['genre']
+            ':game_id' => $gameId,
+            ':publisher_id' => $publisherId
         ]);
+        $gamePublisher = $query->fetch();
 
-        $gameId = $connection->lastInsertId();  // ID del juego recién insertado
+        if (!$gamePublisher) {
+            // Insertamos la relación si no existe
+            $consulta = 'INSERT INTO game_publisher (game_id, publisher_id) VALUES (:game_id, :publisher_id)';
+            $query = $connection->prepare($consulta);
+            $query->execute([
+                ':game_id' => $gameId,
+                ':publisher_id' => $publisherId
+            ]);
+            $gamePublisherId = $connection->lastInsertId();
+        } else {
+            // Recuperamos el ID de la relación existente
+            $gamePublisherId = $gamePublisher['id'];
+        }
 
-        $consulta = 'INSERT INTO game_publisher (game_id, publisher_id) VALUES (:game_id, :publisher_id)';
+        // PLATAFORMA
+        $consulta = 'SELECT id FROM game_platform WHERE game_publisher_id = :game_publisher_id AND platform_id = :platform_id'; // Para saber si la relación con la plataforma existe
         $query = $connection->prepare($consulta);
         $query->execute([
-            ':game_id' => $gameId,  // ID del juego
-            ':publisher_id' => $publisherId  // ID del editor
+            ':game_publisher_id' => $gamePublisherId,
+            ':platform_id' => $_POST['platform']
         ]);
+        $gamePlatform = $query->fetch();
 
-        $gamePublisherId = $connection->lastInsertId();  // ID del juego recién insertado
+        if (!$gamePlatform) {
+            // Insertamos la plataforma si no existe la relación
+            $consulta = 'INSERT INTO game_platform (game_publisher_id, platform_id, release_year) 
+                         VALUES (:game_publisher_id, :platform_id, :release_year)';
+            $query = $connection->prepare($consulta);
+            $query->execute([
+                ':game_publisher_id' => $gamePublisherId,
+                ':platform_id' => $_POST['platform'],
+                ':release_year' => $_POST['release_year']
+            ]);
+        }
 
-        // Insertamos la plataforma
-        $consulta = 'INSERT INTO game_platform (game_publisher_id, platform_id, release_year) VALUES (:game_publisher_id, :platform_id, :release_year)';
+        // VENTAS a cero
+        $gamePlatformId = $connection->lastInsertId();
+        $consulta = 'INSERT INTO region_sales (region_id, game_platform_id, num_sales) 
+                     VALUES (4, :game_platform_id, 0)';
         $query = $connection->prepare($consulta);
         $query->execute([
-            ':game_publisher_id' => $gamePublisherId,  // ID del editor que ya hemos guardado
-            ':platform_id' => $_POST['platform'],
-            ':release_year' => $_POST['release_year']  // Año de lanzamiento
-        ]);
-
-        $gamePlatformId = $connection->lastInsertId();  // ID de la plataforma recién insertado
-
-        // Insertamos las ventas
-        $consulta = 'INSERT INTO region_sales (region_id, game_platform_id, num_sales) VALUES (4, :game_platform_id, 0)';
-        $query = $connection->prepare($consulta);
-        $query->execute([
-            ':game_platform_id' => $gamePlatformId  // ID de la relación juego-plataforma
+            ':game_platform_id' => $gamePlatformId
         ]);
 
         $connection->commit();
@@ -143,9 +183,10 @@ if (!empty($_POST)) {
     } catch (PDOException $e) {
         // Rollback en caso de error
         $connection->rollBack();
-        echo 'Error al añadir el juego: ' . $e->getMessage();
+        echo '<div class="error">Error al añadir el juego: ' . $e->getMessage() . '</div>';
     }
 }
 ?>
+
 </body>
 </html>

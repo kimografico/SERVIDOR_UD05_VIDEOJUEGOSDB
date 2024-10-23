@@ -1,2 +1,5 @@
-/.vscode
-/SQL
+SQL/01_reference_data.sql
+SQL/02_game.sql
+SQL/03_game_publisher.sql
+SQL/04_game_platform.sql
+SQL/05_region_sales.sql
